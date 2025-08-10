@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emergency SOS</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f8f8; }
+    button {
+      background-color: #d9534f;
+      color: white;
+      font-size: 24px;
+      padding: 20px 40px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Emergency SOS</h1>
+<button id="sosBtn">Send SOS via SMS</button>
+<p id="status"></p>
+
+<script>
+  const sosBtn = document.getElementById('sosBtn');
+  const status = document.getElementById('status');
+
+  sosBtn.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      status.textContent = 'Geolocation is not supported by your browser';
+      return;
+    }
+
+    status.textContent = 'Getting your location...';
+
+    navigator.geolocation.getCurrentPosition(position => {
+      const lat = position.coords.latitude.toFixed(6);
+      const lon = position.coords.longitude.toFixed(6);
+      const message = `EMERGENCY! Please help me. My location: https://maps.google.com/?q=${lat},${lon}`;
+      const phoneNumber = '1234567890'; // Replace with emergency contact number
+
+      // Open SMS app with pre-filled message
+      window.location.href = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+
+      status.textContent = 'Opening SMS app...';
+    }, () => {
+      status.textContent = 'Unable to retrieve your location';
+    });
+  });
+</script>
+
+</body>
+</html>
